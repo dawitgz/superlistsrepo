@@ -28,7 +28,7 @@ class NewVisitorTest(unittest.TestCase):
 		)
 
 		# She types "Buy peacock feathers" into a text box
-		input_box.send_keys('Buy peackock feathers')
+		input_box.send_keys('Buy peacock feathers')
 
 		# When she hits enter, the page updates, and now the page says 
 		# "1: Buy peacock feathers" as an item in a to-do list
@@ -37,21 +37,24 @@ class NewVisitorTest(unittest.TestCase):
 
 		table = self.browser.find_element_by_id('id_list_table')
 		rows = table.find_elements_by_tag_name('tr')
-		self.assertTrue(
-			any(row.text == '1: Buy peacock feathers' for row in rows),
-			"New to-do item did not appear in table"
-		)
+		self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
 
 		# There is still a text box inviting her to add another item and she enters
 		# "Use peacock feathers to make a fly"
-		self.fail("Finish the test!")
+		input_box = self.browser.find_element_by_id('id_new_item')
+		input_box.send_keys('Use peacock feathers to make a fly')
+		input_box.send_keys(Keys.ENTER)
+		time.sleep(1)
 
 		# The page updates again, and now shows both items on her to-do list
+		rows = self.browser.find_elements_by_id('id_list_table')
+		self.assertIn('1: Buy peacock feathers',[row.text for row in rows])
+		self.assertIn('2. Use peacock feathers to make a fly', [row.text for row in rows])
 
 		# Edith wonders whether the site will remember her list. Then she notices
 		# that the site has generated a unique URL for her -- there is an explanatory
 		# text to that effect.
-
+		self.fail("Finish the test!")
 		# She visits that URL - her to-do list is still there.
 
 		# Satisfied, she goes back to sleep
